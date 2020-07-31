@@ -1,33 +1,23 @@
 const express = require('express')
-
+const path = require('path')
 const fs = require('fs')
 
-const path = require('path')
-
-//port setup
+// Set up Express app to listen on port 3000
+let app = express()
 let PORT = process.env.PORT || 3000
 
-let app = express()
-
-// express setup
+// Set up Express app to handle data parsing
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.static('public'))
 let notes = require('./db/db.json')
 
-app.use(express.json())
-
-app.use(express.static('public'))
-
-app.use(express.urlencoded({ extended: true }))
-
-// api gets
-app.get('*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public/index.html'))
-})
-
+// Routes
 app.get('/notes', function (req, res) {
   res.sendFile(path.join(__dirname, 'public/notes.html'))
 })
 
-// Display
+// Display notes
 app.get('/api/notes', function (req, res) {
   fs.readFile('db/db.json', 'utf8', function (err, data) {
     if (err) {
@@ -38,12 +28,33 @@ app.get('/api/notes', function (req, res) {
   })
 })
 
-//  Listening
+// Starts server to begin listening
 app.listen(PORT, function () {
-  console.log('listening on PORT ' + PORT)
+  console.log('App listening on PORT ' + PORT)
 })
 
-// Delete
+// Create new note
+app.post('/api/notes', function (req, res) {
+  let randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
+  let id = randLetter + Date.now()
+  let newNote = {
+    id: id,
+    title: req.body.title,
+    text: req.body.text
+  }
+  console.log(typeof notes)
+  notes.push(newNote)
+  const stringifyNote = JSON.stringify(notes)
+  res.json(notes)
+  fs.writeFile('db/db.json', stringifyNote, err => {
+    if (err) console.log(err)
+    else {
+      console.log('Note successfully saved to db.json')
+    }
+  })
+})
+
+// Delete note
 app.delete('/api/notes/:id', function (req, res) {
   let noteID = req.params.id
   fs.readFile('db/db.json', 'utf8', function (err, data) {
@@ -57,30 +68,14 @@ app.delete('/api/notes/:id', function (req, res) {
     fs.writeFile('db/db.json', stringifyNote, err => {
       if (err) console.log(err)
       else {
-        console.log('deleted from db.json')
+        console.log('Note successfully deleted from db.json')
       }
     })
     res.json(stringifyNote)
   })
 })
 
-// new note
-app.post('/api/notes', function (req, res) {
-  let randomNumbers = String.fromCharCode(65 + Math.floor(Math.random() * 26))
-  let id = randomNumbers + Date.now()
-  let newNote = {
-    id: id,
-    title: req.body.title,
-    text: req.body.text
-  }
-
-  notes.push(newNote)
-  const stringifyNote = JSON.stringify(notes)
-  res.json(notes)
-  fs.writeFile('db/db.json', stringifyNote, err => {
-    if (err) console.log(err)
-    else {
-      console.log(' Saved to db.json')
-    }
-  })
+// Catch all error route
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public/index.html'))
 })
