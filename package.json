@@ -1,15 +1,14 @@
-  
 {
-    "name": "note-taker",
-    "version": "1.0.0",
-    "description": "",
-    "main": "server.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-      "express": "^4.16.4"
-    }
+  "name": "note-taker",
+  "version": "1",
+  "description": "This is a note taking app using node.js, express",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dale Foskey",
+  "license": "",
+  "dependencies": {
+    "express": "^4.16.4"
   }
+}
