@@ -21,8 +21,8 @@
 
   ### Usage & getting Started
   ---
-  > From the command line prompt you will run the following commands within the project directory folder.
-
+  > To see the app in action check it out
+  [Lets go to Quora](https://notetakerman.herokuapp.com/)
 
   ### Installation
   ---
