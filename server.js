@@ -1,39 +1,47 @@
-const express = require('express')
-const path = require('path')
+//gather all my required
 const fs = require('fs')
 
-// Set up Express app to listen on port 3000
-let app = express()
-let PORT = process.env.PORT || 3000
+const path = require('path')
 
-// Set up Express app to handle data parsing
+const express = require('express')
+
+// grab port 8800
+
+let PORT = process.env.PORT || 8800
+let app = express()
+
+// get express
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static('public'))
 let notes = require('./db/db.json')
 
-// Routes
 app.get('/notes', function (req, res) {
   res.sendFile(path.join(__dirname, 'public/notes.html'))
 })
 
-// Display notes
-app.get('/api/notes', function (req, res) {
+// delete
+app.delete('/api/notes/:id', function (req, res) {
+  let noteID = req.params.id
   fs.readFile('db/db.json', 'utf8', function (err, data) {
-    if (err) {
-      console.log(err)
-      return
-    }
-    res.json(notes)
+    let updatedNotes = JSON.parse(data).filter(note => {
+      console.log('note.id', note.id)
+      console.log('noteID', noteID)
+      return note.id !== noteID
+    })
+    notes = updatedNotes
+    const stringifyNote = JSON.stringify(updatedNotes)
+    fs.writeFile('db/db.json', stringifyNote, err => {
+      if (err) console.log(err)
+      else {
+        console.log('saved db.json')
+      }
+    })
+    res.json(stringifyNote)
   })
 })
 
-// Starts server to begin listening
-app.listen(PORT, function () {
-  console.log('App listening on PORT ' + PORT)
-})
-
-// Create new note
+// start a new note
 app.post('/api/notes', function (req, res) {
   let randLetter = String.fromCharCode(65 + Math.floor(Math.random() * 26))
   let id = randLetter + Date.now()
@@ -49,33 +57,27 @@ app.post('/api/notes', function (req, res) {
   fs.writeFile('db/db.json', stringifyNote, err => {
     if (err) console.log(err)
     else {
-      console.log('Note successfully saved to db.json')
+      console.log('saved db.json')
     }
   })
 })
 
-// Delete note
-app.delete('/api/notes/:id', function (req, res) {
-  let noteID = req.params.id
+// show the notes
+app.get('/api/notes', function (req, res) {
   fs.readFile('db/db.json', 'utf8', function (err, data) {
-    let updatedNotes = JSON.parse(data).filter(note => {
-      console.log('note.id', note.id)
-      console.log('noteID', noteID)
-      return note.id !== noteID
-    })
-    notes = updatedNotes
-    const stringifyNote = JSON.stringify(updatedNotes)
-    fs.writeFile('db/db.json', stringifyNote, err => {
-      if (err) console.log(err)
-      else {
-        console.log('Note successfully deleted from db.json')
-      }
-    })
-    res.json(stringifyNote)
+    if (err) {
+      console.log(err)
+      return
+    }
+    res.json(notes)
   })
 })
 
-// Catch all error route
+app.listen(PORT, function () {
+  console.log('listening on PORT ' + PORT)
+})
+
+// errors
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'public/index.html'))
 })
