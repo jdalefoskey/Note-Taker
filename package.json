@@ -1,6 +1,6 @@
 {
   "name": "note-taker",
-  "version": "1",
+  "version": "1.0.0",
   "description": "This is a note taking app using node.js, express",
   "main": "server.js",
   "scripts": {
