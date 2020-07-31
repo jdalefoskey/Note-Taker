@@ -7,7 +7,8 @@
   ## Description [![JavaScript Style Guide: Good Parts](https://img.shields.io/badge/code%20style-goodparts-brightgreen.svg?style=flat)](https://github.com/dwyl/goodparts "JavaScript The Good Parts")
   ---
   > This project was created using javascript, node.js, and express.  It is a note taking app that allows you to create, delete, and view stored notes.
-
+  ![image](screenshot1.png)
+  ![image](screenshot2.png)
   
   ### Table of Contents
   ---
