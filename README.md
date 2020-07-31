@@ -21,8 +21,8 @@
 
   ### Usage & getting Started
   ---
-  > To see the app in action check it out
-  [Lets go to Quora](https://notetakerman.herokuapp.com/)
+  
+  [Check out the app live!](https://notetakerman.herokuapp.com/)
 
   ### Installation
   ---
